@@ -121,6 +121,12 @@ sig = Saw.ar(rpm, 6) + Blip.ar(rpm*2.5, 6); AKA sig = Saw.ar(rpm*2.5, 6) + Blip.
 
 {LPF.ar(Saw.ar(MouseX.kr(0,100),6)!2*0.25)}.play;
 
+1-2-3 shift up to 8000
+
+	EnvGen.kr(Env.new(
+		[800,800, 8000, 4500, 8000, 5500, 8000, 6000, 8000, 4000], [1, 1.2, 0.3, 2, 0.3, 4, 8]
+	));
+
 
 //SUBARU SIMILAR
 
@@ -128,18 +134,22 @@ sig = Saw.ar(rpm, 6) + Blip.ar(rpm*2.5, 6); AKA sig = Saw.ar(rpm*2.5, 6) + Blip.
 
 (
 y = {
-	var engineSpeed, rpm, noise, engine, intake, engine1, engine2, mousePosX, engine3,
+	var engineSpeed, rpm, noise, engine, intake, engine1, engine2, mousePosX, engine3, controllerA,
 	env;
 
 	env = EnvGen.kr(Env.new(
-		[800,800,2000,800,8000,800, 800], [0.5, 0.5, 1, 1, 3, 1]
+		[800,800, 8000, 4500, 8000, 5500, 8000, 6000, 8000, 4000], [1, 1.2, 0.3, 2, 0.3, 4, 8]
 	), doneAction:2);
+
+	//((env-800)/7200);
+
+
 
 
 
 	engineSpeed = env;
 
-	mousePosX = MouseX.kr(0,1);
+	controllerA = ((env-800)/7200);
 
 
 	rpm = (engineSpeed/60)*2;
@@ -150,16 +160,16 @@ y = {
 	engine2 = Saw.ar(rpm,6);
 	engine3 = VarSaw.ar(rpm*0.25) + VarSaw.ar(rpm*0.5);
 
-	engine1 = LPF.ar(engine1, (mousePosX*600)+100);
+	engine1 = LPF.ar(engine1, (controllerA*600)+100);
 
 
-	engine2 = HPF.ar(engine2, mousePosX * 100);
+	engine2 = HPF.ar(engine2, controllerA * 100);
 
-	engine2 = engine2 * ((mousePosX*0.3)+0.4);
+	engine2 = engine2 * ((controllerA*0.3)+0.4);
 
 
 
-	engine3 * (mousePosX * 1.5);
+	engine3 * (controllerA * 1);
 
 
 
@@ -175,7 +185,7 @@ y = {
 
 
 
-	engine = BPF.ar(engine, MouseX.kr(800,1200));
+	engine = BPF.ar(engine, MouseX.kr(100,1200)); //INSIDE VS OUTSIDE THE CAR?
 
 	engine = LPF.ar(engine, 1000 + engineSpeed/10);
 
