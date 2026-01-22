@@ -66,9 +66,9 @@ y = {
 
 	engine = LPF.ar(engine, rpm.linexp(800,7000,200,12000) + 800);
 
-	engine = HPF.ar(engine, rpm.linlin(800,7000,50,400)); linlin
+	engine = HPF.ar(engine, rpm.linlin(800,7000,50,400));
 
-	engine * 0.5 ! 2;
+	engine = engine * 0.5 ! 2;
 
 }.play;
 )
@@ -119,35 +119,52 @@ sig = Saw.ar(rpm, 6) + Blip.ar(rpm*1.4,6); is similar to an i5 engine
 
 sig = Saw.ar(rpm, 6) + Blip.ar(rpm*2.5, 6); AKA sig = Saw.ar(rpm*2.5, 6) + Blip.ar(rpm, 6);
 
+{LPF.ar(Saw.ar(MouseX.kr(0,100),6)!2*0.25)}.play;
 
 
 //SUBARU SIMILAR
 
-{LPF.ar(Saw.ar(MouseX.kr(0,100),6)!2*0.25)}.play;
+
 
 (
 y = {
-	var engineSpeed, rpm, noise, engine, intake, engine1, engine2;
+	var engineSpeed, rpm, noise, engine, intake, engine1, engine2, mousePosX, engine3;
 
 	engineSpeed = MouseX.kr(800,7000);
+
+	mousePosX = MouseX.kr(0,1);
 
 
 	rpm = (engineSpeed/60)*2;
 
-	engine = Saw.ar(rpm*2.5, 6) + Blip.ar(rpm, 6);
+	//engine = Saw.ar(rpm*2.5, 6) + Blip.ar(rpm, 6);
 
-	engine1 = Saw.ar(rpm*2.5,6);
+	engine1 = Saw.ar(rpm*2.5,6) + Blip.ar(rpm*3, 6);
 	engine2 = Saw.ar(rpm,6);
+	engine3 = VarSaw.ar(rpm*0.25);
 
-	engine1 = LPF.ar(engine1, rpm.linexp(800,7000,300,100));
-
-	engine = engine1 + engine2;
-
-	engine = engine * rpm.linlin(800,7000,1,6);
+	engine1 = LPF.ar(engine1, (mousePosX*600)+100);
 
 
+	engine2 = HPF.ar(engine2, mousePosX * 100);
 
-	engine = engine.tanh;
+	engine2 = engine2 * ((mousePosX*0.3)+0.4);
+
+
+
+	engine3 * (mousePosX * 3);
+
+
+
+
+	engine = engine1 + engine2 + engine3;
+
+	//engine = engine * rpm.linlin(800,7000,1,6);
+
+
+	//engine = engine.tanh;
+
+	engine = (engine*1.5).softclip;
 
 
 
@@ -155,7 +172,7 @@ y = {
 
 	engine = LPF.ar(engine, 1000 + engineSpeed/10);
 
-	engine = HPF.ar(engine, 50);
+	engine = HPF.ar(engine, engineSpeed/30);
 
 	engine * 0.2 ! 2;
 
@@ -167,7 +184,9 @@ y = {
 
 Blip
 
+
 Saw
+VarSaw
 
 Pulse
 
