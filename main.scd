@@ -128,9 +128,16 @@ sig = Saw.ar(rpm, 6) + Blip.ar(rpm*2.5, 6); AKA sig = Saw.ar(rpm*2.5, 6) + Blip.
 
 (
 y = {
-	var engineSpeed, rpm, noise, engine, intake, engine1, engine2, mousePosX, engine3;
+	var engineSpeed, rpm, noise, engine, intake, engine1, engine2, mousePosX, engine3,
+	env;
 
-	engineSpeed = MouseX.kr(800,7000);
+	env = EnvGen.kr(Env.new(
+		[800,800,2000,800,8000,800, 800], [0.5, 0.5, 1, 1, 3, 1]
+	), doneAction:2);
+
+
+
+	engineSpeed = env;
 
 	mousePosX = MouseX.kr(0,1);
 
@@ -141,7 +148,7 @@ y = {
 
 	engine1 = Saw.ar(rpm*2.5,6) + Blip.ar(rpm*3, 6);
 	engine2 = Saw.ar(rpm,6);
-	engine3 = VarSaw.ar(rpm*0.25);
+	engine3 = VarSaw.ar(rpm*0.25) + VarSaw.ar(rpm*0.5);
 
 	engine1 = LPF.ar(engine1, (mousePosX*600)+100);
 
@@ -152,7 +159,7 @@ y = {
 
 
 
-	engine3 * (mousePosX * 3);
+	engine3 * (mousePosX * 1.5);
 
 
 
@@ -174,7 +181,7 @@ y = {
 
 	engine = HPF.ar(engine, engineSpeed/30);
 
-	engine * 0.2 ! 2;
+	engine * 0.1 ! 2;
 
 }.play;
 )
