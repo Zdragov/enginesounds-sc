@@ -151,16 +151,13 @@ y = {
 
 
 
-	engine = BPF.ar(
-		engine,
-		rpm.linexp(800,7000,800,4500)
-		, 0.3);
+	engine = BPF.ar(engine, MouseX.kr(800,1200));
 
-	engine = LPF.ar(engine, rpm.linexp(800,7000,200,12000) + 800);
+	engine = LPF.ar(engine, 1000 + engineSpeed/10);
 
-	engine = HPF.ar(engine, rpm.linlin(00,7000,50,400));
+	engine = HPF.ar(engine, 50);
 
-	engine * 0.5 ! 2;
+	engine * 0.2 ! 2;
 
 }.play;
 )
